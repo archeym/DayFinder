@@ -29,8 +29,7 @@ class ViewController: UIViewController {
         
 //        dateComponents.day = Int(dayTextField.text!)
         guard let myDay = Int(dayTextField.text ?? ""), let myMonth = Int(monthTextField.text ?? ""), let myYear = Int(yearTextField.text ?? "") else {
-            #warning("HW warning for alert input")
-            print("bug here")
+            basicAlert(title: "Error", message: "UITextFields can't be empty!")
             return
         }
         
@@ -48,9 +47,13 @@ class ViewController: UIViewController {
         switch findButton.titleLabel?.text {
         case "Find":
             findButton.setTitle("Clear", for: .normal)
-            let weekday = dateFormatter.string(from: myDate)
-            resultLabel.text = weekday.capitalized
-#warning("HW check the input for right values clearMyTextFields()")
+            if myDay >= 1 && myDay <= 31 && myMonth >= 1 && myMonth <= 12{
+                let weekday = dateFormatter.string(from: myDate)
+                resultLabel.text = weekday.capitalized
+            }else{
+                basicAlert(title: "Wrong Date", message: "Please check your date")
+                clearMyTextFields()
+            }
         default:
             findButton.setTitle("Find", for: .normal)
             clearMyTextFields()
@@ -58,7 +61,7 @@ class ViewController: UIViewController {
         
     }//findButtonTapped
     
-    func clearMyTextFields(){
+    func clearMyTextFields() {
         dayTextField.text = ""
         monthTextField.text = ""
         yearTextField.text = ""
@@ -69,6 +72,29 @@ class ViewController: UIViewController {
         self.view.endEditing(true)
     }
     
+    func basicAlert(title: String?, message: String?){
+        DispatchQueue.main.async {
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            
+            self.present(alert, animated: true)
+        }
+    }
+    
+
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "info" {
+            // Get the new view controller using segue.destination.
+            guard let vc = segue.destination as? InfoViewController else {return}
+            // Pass the selected object to the new view controller.
+            vc.infoText = "Info ViewController"
+            vc.nameText = "iOS"
+        }
+    }
+
 
 }
 
